@@ -1,4 +1,4 @@
-module bitstamp
+module github.com/trever-io/go-bitstamp
 
 go 1.18
 
