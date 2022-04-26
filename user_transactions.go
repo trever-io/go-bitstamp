@@ -3,6 +3,7 @@ package bitstamp
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -99,12 +100,12 @@ func (u *UserTransaction) UnmarshalJSON(data []byte) error {
 
 type UserTransactions []*UserTransaction
 
-func (c *Client) UserTransactions(since int64) (UserTransactions, error) {
-	var buf *strings.Reader
+func (c *Client) UserTransactions(sinceTimestamp int64) (UserTransactions, error) {
+	var buf io.Reader
 	data := url.Values{}
 
-	if since != 0 {
-		data.Set("since_timestamp", strconv.FormatInt(since, 10))
+	if sinceTimestamp != 0 {
+		data.Set("since_timestamp", strconv.FormatInt(sinceTimestamp, 10))
 	}
 
 	if len(data) > 0 {
@@ -115,8 +116,6 @@ func (c *Client) UserTransactions(since int64) (UserTransactions, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println(string(b))
 
 	tx := UserTransactions{}
 	err = json.Unmarshal(b, &tx)
