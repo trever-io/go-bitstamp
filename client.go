@@ -119,6 +119,16 @@ func (c *Client) privateRequest(endpoint string, method string, body io.Reader) 
 	return c.doRequest(req)
 }
 
+func (c *Client) publicRequest(endpoint string, method string, body io.Reader) ([]byte, error) {
+	url := fmt.Sprintf("%v%v", API_URL, endpoint)
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.doRequest(req)
+}
+
 func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
