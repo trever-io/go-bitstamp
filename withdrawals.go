@@ -60,6 +60,13 @@ func (c *Client) Withdraw(asset string, address string, amount string, optionalP
 
 	resp := new(WithdrawResponse)
 	err = json.Unmarshal(b, resp)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Status == "error" {
+		return nil, fmt.Errorf("%v", resp.Reason)
+	}
 
 	return resp, err
 }
@@ -85,12 +92,12 @@ func (c *Client) FiatWithdraw(asset string, amount string, name string, iban str
 
 	resp := new(WithdrawResponse)
 	err = json.Unmarshal(b, resp)
+	if err != nil {
+		return nil, err
+	}
 
 	if resp.Status == "error" {
-		for k, v := range resp.Reason {
-			err = fmt.Errorf("%s: %s", k, v)
-		}
-		return nil, err
+		return nil, fmt.Errorf("%v", resp.Reason)
 	}
 
 	return resp, err
